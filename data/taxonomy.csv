@@ -1,0 +1,122 @@
+taxonomy_id,taxonomy_name,taxonomy_description
+1,"Orders, Shipping & Delivery","Definition: Customer enquiries related to the status, fulfillment, shipment, or delivery of an order after it has been placed.
+
+Includes
+- Order tracking and shipment updates
+- Delivery delays or missed delivery windows
+- Incorrect delivery address or rescheduling
+- Claims that an order was not received
+
+Excludes
+- Damaged or defective items (see Product Issues)
+- Returns or refunds (see Returns & Refunds)
+- Business relevance: Logistics ops, courier coordination, SLA monitoring"
+2,"Returns, Refunds & Exchanges","Definition: Requests to return products, exchange items, or obtain refunds, including questions about return eligibility or policy.
+
+Includes
+- Product return requests
+- Refund status checks
+- Exchange or replacement requests
+- Return policy clarification
+
+Excludes
+- Product quality complaints without a return request (see Product Defects & Fulfillment Errors)"
+3,Product Defects & Fulfillment Errors,"Definition: Reports that a product is faulty, damaged, incorrect, missing components, or not functioning as expected.
+
+Includes
+- Damaged or broken items
+- Wrong product delivered
+- Missing parts or accessories
+- Product malfunction or defect
+
+Excludes
+- Refund or exchange processing (see Returns, Refunds & Exchanges)"
+4,"Billing, Charges & Price Discrepancies","Definition: Questions or disputes about payments, charges, billing errors, invoices, or price mismatches.
+
+Includes
+- Double charges or overbilling
+- Payment failures or declined payments
+- Price inconsistencies across pages
+- Unexpected fees or charges
+
+Excludes
+- Promo code or discount issues (see Promotions, Discounts & Loyalty)"
+5,Account Access & Customer Profile,"Definition: Issues related to customer login, authentication, account security, or profile management.
+
+Includes
+- Login failures or password resets
+- Locked or compromised accounts
+- Updating personal or contact details
+- Account closure or deactivation requests
+
+Excludes
+- General website or app bugs (see Technical & Platform Issues)"
+6,Technical & Platform Issues,"Definition: Problems caused by website or app malfunctions that prevent normal use of the service.
+
+Includes
+- Website loading failures
+- Checkout or payment page errors
+- Mobile app crashes
+- Broken features or performance issues
+
+Excludes
+- Account credential or password problems (see Account Access & Customer Profile)
+- Business relevance
+- Engineering triage
+- Platform reliability
+- Incident management"
+7,Product Information & Availability,"Definition: Requests for product specifications, compatibility, availability, restock timing, or recommendations before purchase.
+
+Includes
+- Product features or specifications questions
+- Stock availability checks
+- Size, color, or compatibility enquiries
+- Product comparison or recommendation requests
+
+Excludes
+- Post-purchase product issues (see Product Defects & Fulfillment Errors)
+- Business relevance
+- Sales enablement
+- Merchandising optimization
+- Conversion support"
+8,"Promotions, Discounts & Loyalty","Definition: Queries about discount codes, promotional offers, loyalty rewards, or special pricing campaigns.
+
+Includes
+- Promo code errors or failures
+- Discount eligibility questions
+- Sale pricing confusion
+- Loyalty points or rewards enquiries
+
+Excludes
+- General billing disputes (see Billing, Charges & Price Discrepancies)
+- Business relevance
+- Marketing attribution
+- Conversion optimization
+- Campaign performance tracking"
+9,"Complaints, Escalations & Negative Feedback","Definition: Expressions of customer dissatisfaction, formal complaints, service escalations, or reputational risk.
+
+Includes
+- Formal complaints
+- Requests to speak to a supervisor
+- Strong negative sentiment
+- Threats to cancel or leave negative reviews
+
+Excludes
+- Neutral service requests without dissatisfaction
+- Business relevance
+- Customer retention
+- Service recovery
+- Regulatory and reputational risk management"
+10,General Enquiries & Multi-Intent,"Definition: Conversations that do not clearly fit a single category, contain multiple unrelated intents, or lack sufficient detail for confident classification.
+
+Includes
+- Very short or vague enquiries
+- Conversations with mixed topics
+- Out-of-scope or unclear requests
+
+Excludes
+- Conversations with a clear primary topic
+- Business relevance
+- Taxonomy hygiene
+- Emerging topic detection
+- Dataset quality monitoring"

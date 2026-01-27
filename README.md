@@ -19,11 +19,9 @@ This project demonstrates a practical approach: a human-designed taxonomy combin
 | Deliverable | Location | Description |
 |-------------|----------|-------------|
 | Topic taxonomy | `data/taxonomy.csv` | 10 mutually exclusive categories with definitions |
-| Labeled conversations | `data/labels.csv` | 1,000 conversations with topic, confidence, rationale |
+| Labeled conversations | `data/conversations_ai_classified.csv` | 1,000 conversations with topic, confidence, rationale |
 | Labeling script | `main.py` | LangChain + OpenAI classifier with structured output |
-| Design notebook | `classifier.ipynb` | Explains taxonomy design and classifier implementation |
-| EDA notebook | `eda.ipynb` | Exploratory data analysis of conversations |
-
+| Performance review | `model_review.ipynb` | Performs a quick model analysis |
 ---
 
 ## Repository Structure
@@ -34,10 +32,11 @@ conversation-topic-classifier/
 ├── data/
 │   ├── conversations.csv    # Input: 1,000 customer support conversations
 │   ├── taxonomy.csv         # Topic taxonomy (editable)
-│   └── labels.csv           # Output: labeled conversations
+│   ├── conversations_manually_classified.csv     # Manually labeled conversations
+│   └── conversations_ai_classified.csv           # Output: labeled conversations
 ├── tests/
 │   └── test_taxonomy.py     # Taxonomy validation tests
-├── classifier.ipynb         # Design decisions notebook
+├── model_review.ipynb       # Model performance review notebook
 ├── eda.ipynb                # Exploratory data analysis
 ├── requirements.txt         # Python dependencies
 ├── Makefile                 # Common commands
@@ -97,14 +96,14 @@ python main.py --help
 Options:
   --input PATH      Input conversations CSV (default: data/conversations.csv)
   --taxonomy PATH   Taxonomy CSV (default: data/taxonomy.csv)
-  --output PATH     Output labels CSV (default: data/labels.csv)
+  --output PATH     Output conversations with their AI label CSV (default: data/conversations_ai_classified.csv)
   --limit N         Process only first N conversations
   --model NAME      OpenAI model to use (default: gpt-4o-mini)
 ```
 
 ### 4. Output
 
-The script produces `data/labels.csv` with columns:
+The script produces `data/conversations_ai_classified.csv` with columns:
 - `conversation_id`: Original identifier
 - `conversation`: Full conversation text
 - `topic`: Assigned taxonomy label (exactly one)
@@ -119,15 +118,15 @@ The script produces `data/labels.csv` with columns:
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  taxonomy.csv   │────▶│   Prompt with    │────▶│   Structured    │
+│  taxonomy.csv   │────>│   Prompt with    │────>│   Structured    │
 │  (categories)   │     │   topic defs     │     │   Output        │
 └─────────────────┘     └──────────────────┘     │   (Pydantic)    │
-                                │                 └────────┬────────┘
-┌─────────────────┐             │                          │
-│ conversations   │─────────────┘                          ▼
-│     .csv        │                               ┌─────────────────┐
-└─────────────────┘                               │   labels.csv    │
-                                                  └─────────────────┘
+                                │                └────────┬────────┘
+┌─────────────────────┐         │                         │
+│ conversations_raw   │─────────┘                         v
+│     .csv            │                ┌──────────────────────────────────────┐
+└─────────────────────┘                │   conversations_ai_classified.csv    │
+                                       └──────────────────────────────────────┘
 ```
 
 ### Prompt Strategy
@@ -156,7 +155,7 @@ This guarantees:
 
 ### Model Choice
 
-- **gpt-4o-mini**: Chosen for cost-efficiency at scale (1,000+ conversations)
+- **gpt-5.2**: Chosen for the best model for accuracy
 - **temperature=0**: Deterministic outputs for reproducibility
 
 ---
@@ -195,8 +194,6 @@ To add, remove, or edit categories:
 4. **Update descriptions** with clear Includes/Excludes sections
 5. **Re-run the classifier** — taxonomy changes are loaded dynamically
 
-**Warning**: Changing taxonomy invalidates previous labels. Consider versioning your taxonomy or re-labeling when making significant changes.
-
 ---
 
 ## Evaluation & Monitoring
@@ -210,20 +207,6 @@ To add, remove, or edit categories:
 | **Low-confidence rate** | Track % of `confidence=low` — if >15%, review taxonomy clarity |
 | **Spot checks** | Randomly sample 10–20 labels per category, verify correctness |
 | **Rationale review** | Read rationales for disagreements to identify prompt improvements |
-
-### Example Evaluation Workflow
-
-```python
-import pandas as pd
-from sklearn.metrics import classification_report, confusion_matrix
-
-# Load predictions and gold labels
-preds = pd.read_csv("data/labels.csv")
-gold = pd.read_csv("data/gold_labels.csv")  # Your manually labeled subset
-
-merged = preds.merge(gold, on="conversation_id", suffixes=("_pred", "_gold"))
-print(classification_report(merged["topic_gold"], merged["topic_pred"]))
-```
 
 ### Monitoring for Drift
 

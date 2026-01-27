@@ -100,8 +100,8 @@ Examples:
     )
     parser.add_argument(
         "--output",
-        default="data/labels.csv",
-        help="Path to output labels CSV (default: data/labels.csv)"
+        default="data/conversations_ai_classified_.csv",
+        help="Path to output labels CSV (default: data/conversations_ai_classified_.csv)"
     )
     parser.add_argument(
         "--limit",

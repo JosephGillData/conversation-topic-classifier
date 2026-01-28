@@ -220,22 +220,9 @@ The classifier uses LangChain's `with_structured_output()` with a dynamically ge
 
 **Design principle**: Use enums for anything that feeds into automated systems (routing, dashboards, alerts). Use free text for human consumption where nuance matters.
 
-```python
-TopicLabel = create_model(
-    "TopicLabel",
-    # Constrained: Must match taxonomy exactly
-    topic=(Literal["Orders, Shipping & Delivery", ...], ...),
-    # Constrained: Fixed enum for routing
-    emotion=(Literal["calm", "confused", "frustrated", ...], ...),
-    # Free text: Human-readable explanation
-    rationale=(str, ...),
-    handler_summary=(str, Field(max_length=250)),
-)
-```
-
 ### Model Configuration
 
-- **Model**: Configurable via CLI (default: `gpt-5.2`)
+- **Model**: Configurable via CLI (default: `gpt-4.0`) - used for speed and price
 - **Temperature**: `0` for deterministic outputs
 - **Seed**: `42` for reproducibility
 - **Retry logic**: Exponential backoff (3 attempts, 2-60s wait)
@@ -266,22 +253,6 @@ The taxonomy in `data/taxonomy.csv` follows these principles:
 9. Complaints, Escalations & Negative Feedback
 10. General Enquiries & Multi-Intent
 
-### Taxonomy CSV Format
-
-```csv
-taxonomy_id,taxonomy_name,taxonomy_description
-1,"Orders, Shipping & Delivery","Definition: Customer enquiries related to...
-
-Includes:
-- Order tracking and shipment updates
-- Delivery delays or missed delivery windows
-...
-
-Excludes:
-- Damaged or defective items (see Product Issues)
-..."
-```
-
 ---
 
 ## Measuring Quality
@@ -307,56 +278,21 @@ Evaluating taxonomy and classification quality requires both quantitative metric
 3. **Handler feedback loop**: Collect feedback from agents using `handler_summary`
 4. **Escalation audit**: Review all `escalation_required=True` cases weekly
 
-### Human Audit / Inter-Annotator Agreement
-
-For taxonomy changes or quality assessment:
-
-1. **Sample selection**: Stratified sample of 50-100 conversations (5-10 per topic)
-2. **Dual annotation**: Two humans label independently
-3. **Agreement measurement**: Calculate Cohen's Kappa (target: >0.8)
-4. **Disagreement review**: Discuss edge cases to refine taxonomy descriptions
-
-### Sampling Protocol
-
-```
-Weekly Quality Check:
-├── Random sample: 50 conversations
-├── Stratified by topic: ~5 per category
-├── Stratified by confidence: oversample low-confidence
-├── Include: all escalation_required=True from past week
-└── Review checklist:
-    ├── Topic correct? (Y/N)
-    ├── Emotion accurate? (Y/N)
-    ├── Actions appropriate? (Y/N)
-    ├── Escalation decision correct? (Y/N)
-    └── Handler summary useful? (1-5 scale)
-```
-
 ### A/B Testing Taxonomy Changes
 
 When modifying the taxonomy:
 
-1. **Baseline**: Run current taxonomy on test set, record metrics
-2. **Variant**: Run modified taxonomy on same test set
+1. **Baseline**: Run current taxonomy on the test set and record metrics
+2. **Variant**: Run modified taxonomy on the same test set and record metrics
 3. **Compare**:
-   - Accuracy on gold set (if available)
+   - Accuracy on the test set (should improve)
    - Confidence distribution (should shift toward higher confidence)
    - Catch-all rate (should decrease if taxonomy improved)
    - Inter-annotator agreement (should increase)
 4. **Rollout**: If metrics improve, deploy new taxonomy
 5. **Monitor**: Watch for unexpected shifts in first 48 hours
 
-### Routing Correctness
-
-Validate that topic → workflow mappings are working:
-
-| Topic | Expected Workflow | Validation |
-|-------|-------------------|------------|
-| Account Access | Auth Support Bot | Check resolution rate |
-| Billing | Billing Specialist | Check CSAT scores |
-| Complaints | Senior Agent | Check escalation resolution |
-
-### Drift Monitoring Triggers
+### Data Drift Monitoring Triggers
 
 Set alerts for:
 - Topic distribution shift >10% week-over-week
@@ -373,50 +309,17 @@ Taxonomies must evolve as products, policies, and customer needs change.
 
 ### Change Control Process
 
-```
-Taxonomy Change Workflow:
-1. Identify need (metrics trigger, business request, new product)
-2. Draft change (add/modify/merge/split category)
-3. Test on sample (50-100 conversations)
+A need to change the taxonomy could come from a data drift alert, a business request or a new product. When a change to the taxonomy needs to be made, it should be done via a structured process:
+
+2. Draft a change to the taxonomy to address the issue (add/modify/merge/split category)
+3. Test on sample (50-100 conversations) -> via A/B testing above
 4. Review with stakeholders (support ops, analytics, product)
 5. Approve and version
 6. Deploy and monitor
-```
 
 ### Versioning Strategy
 
-1. **Version taxonomy.csv**: Use semantic versioning in filename or header
-   ```
-   # taxonomy_version: 2.1.0
-   # effective_date: 2024-01-15
-   # changelog: Added "Subscription Management" category
-   ```
-
-2. **Tag releases**: Git tag each taxonomy version
-   ```bash
-   git tag taxonomy-v2.1.0
-   ```
-
-3. **Archive old versions**: Keep `data/taxonomy_archive/taxonomy_v2.0.0.csv`
-
-### Backwards Compatibility
-
-When changing taxonomy:
-
-| Change Type | Backward Compatible? | Migration Strategy |
-|-------------|---------------------|-------------------|
-| Add category | Yes | No action needed |
-| Rename category | No | Map old → new in analytics |
-| Merge categories | No | Map old → new in analytics |
-| Split category | No | Re-label historical data OR accept mixed labels |
-| Remove category | No | Map to remaining category |
-
-**Label mapping table** (maintain in `data/taxonomy_mappings.csv`):
-```csv
-old_label,new_label,effective_date
-"Technical Issues","Technical & Platform Issues",2024-01-15
-"Website Bugs","Technical & Platform Issues",2024-01-15
-```
+The taxonomy should be version controlled via Git, ensuring that updates are traceable, reversible, and well-documented.
 
 ### Handling Emerging Topics
 
@@ -441,12 +344,14 @@ When new topics appear:
 ### Avoiding Taxonomy Bloat
 
 **Warning signs**:
+
 - >15 categories (harder for LLM to distinguish)
 - Categories with <3% volume (consider merging)
 - Overlapping descriptions causing confusion
 - Low inter-annotator agreement on specific categories
 
 **Remediation**:
+
 - Merge low-volume categories into related ones
 - Consolidate overlapping categories
 - Use hierarchical taxonomy (parent → child) if needed

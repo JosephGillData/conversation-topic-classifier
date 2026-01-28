@@ -196,11 +196,11 @@ out_of_stock, recall_or_safety_return, refund_timeline_cod, unknown_or_multi_int
 │  (categories)   │     │   • Topic definitions    │     │   (Pydantic model)  │
 └─────────────────┘     │   • Enum constraints     │     └──────────┬──────────┘
                         │   • Extraction rules     │                │
-┌─────────────────┐     └──────────────────────────┘                ▼
-│ conversations   │                ^              ┌─────────────────────────────┐
-│     _raw.csv    │────────────────┘              │ conversations_ai_classified │
-└─────────────────┘                               │         _.csv               │
-                                                  └─────────────────────────────┘
+┌─────────────────┐     └──────────────────────────┘                v
+│ conversations   │                ^                 ┌─────────────────────────────┐
+│     _raw.csv    │────────────────┘                 │ conversations_ai_classified │
+└─────────────────┘                                  │         _.csv               │
+                                                     └─────────────────────────────┘
 ```
 
 ### Structured Output Strategy

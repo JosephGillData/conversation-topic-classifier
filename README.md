@@ -345,7 +345,7 @@ When new topics appear:
 
 **Warning signs**:
 
-- >15 categories (harder for LLM to distinguish)
+- Over 15 categories (harder for LLM to distinguish)
 - Categories with <3% volume (consider merging)
 - Overlapping descriptions causing confusion
 - Low inter-annotator agreement on specific categories

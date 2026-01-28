@@ -355,7 +355,6 @@ When new topics appear:
 - Merge low-volume categories into related ones
 - Consolidate overlapping categories
 - Use hierarchical taxonomy (parent → child) if needed
-- Review annually: "Is this category still needed?"
 
 ### Recommended Cadence
 
@@ -374,7 +373,7 @@ When new topics appear:
 - **Single-label only**: Conversations with multiple intents get the "primary" one
 - **No fine-tuning**: Uses zero-shot prompting; domain-specific training could improve accuracy
 - **English only**: Taxonomy and prompts are in English
-- **Cost at scale**: ~$0.02-0.05 per conversation with full enrichment
+- **Cost at scale**: ~$0.02-0.05 per conversation with full enrichment (using GPT5.2 model)
 - **Latency**: Single LLM call adds ~1-3s per conversation
 
 ---
@@ -423,6 +422,32 @@ jupyter notebook model_review.ipynb
 | `Duplicate taxonomy names` | Each `taxonomy_name` must be unique |
 | `Empty operational_actions` | This is valid; not all conversations need specific actions |
 | `Lists showing as strings` | Pandas serializes lists; use `ast.literal_eval()` to parse |
+
+---
+
+## Future Improvements & Next Steps
+
+This project is designed as a foundation for production-grade conversation intelligence. Below are recommended next steps to evolve it from a research prototype into a scalable, reliable, and deployable system.
+
+### Deployment
+
+- Package as a Dockerized batch job or FastAPI service
+- Deploy on AWS/GCP/Azure (Cloud Run, ECS, Lambda, etc.)
+- Add CI/CD for automated testing and releases
+- Store outputs in a data warehouse for analytics and reporting
+
+### Platform & Tooling Integration
+
+- Integrate with support platforms (Zendesk, Intercom, Salesforce)
+- Use outputs for auto-routing, escalation, and agent guidance
+- Build dashboards for topic trends, risk levels, and root causes
+
+### Model & Performance Enhancements
+
+- Fine-tune on labeled conversation data
+- Support multi-label classification for multi-intent cases
+- Optimize cost/latency via model tiering and batching
+- Improve confidence calibration and drift detection
 
 ---
 

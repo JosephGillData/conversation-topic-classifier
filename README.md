@@ -197,8 +197,8 @@ out_of_stock, recall_or_safety_return, refund_timeline_cod, unknown_or_multi_int
 └─────────────────┘     │   • Enum constraints     │     └──────────┬──────────┘
                         │   • Extraction rules     │                │
 ┌─────────────────┐     └──────────────────────────┘                ▼
-│ conversations   │────────────────┘              ┌─────────────────────────────┐
-│     _raw.csv    │                               │ conversations_ai_classified │
+│ conversations   │                ^              ┌─────────────────────────────┐
+│     _raw.csv    │────────────────┘              │ conversations_ai_classified │
 └─────────────────┘                               │         _.csv               │
                                                   └─────────────────────────────┘
 ```

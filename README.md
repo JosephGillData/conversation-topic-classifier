@@ -1,4 +1,4 @@
-# Conversation Topic Classifier with Operational Enrichment
+# Conversation Topic Classifier
 
 An LLM-powered classifier that assigns **topic labels AND operational metadata** to customer support conversations using a configurable taxonomy. Built with LangChain and OpenAI's structured output for consistent, validated results.
 
@@ -40,8 +40,8 @@ This project demonstrates a practical approach: a human-designed taxonomy combin
 conversation-topic-classifier/
 ├── main.py                  # Main labeling script (CLI)
 ├── data/
-│   ├── conversations_raw.csv                    # Input: raw conversations
-│   ├── taxonomy.csv                             # Topic taxonomy (editable)
+│   ├── conversations_raw.csv                   # Input: raw conversations
+│   ├── taxonomy.csv                            # Topic taxonomy (editable)
 │   ├── conversations_manually_classified.csv   # Gold-set manual labels
 │   └── conversations_ai_classified_.csv        # Output: full enriched labels
 ├── tests/
@@ -192,7 +192,7 @@ out_of_stock, recall_or_safety_return, refund_timeline_cod, unknown_or_multi_int
 
 ```
 ┌─────────────────┐     ┌──────────────────────────┐     ┌─────────────────────┐
-│  taxonomy.csv   │────▶│   Prompt with:           │────▶│   Structured Output │
+│  taxonomy.csv   │────>│   Prompt with:           │────>│   Structured Output │
 │  (categories)   │     │   • Topic definitions    │     │   (Pydantic model)  │
 └─────────────────┘     │   • Enum constraints     │     └──────────┬──────────┘
                         │   • Extraction rules     │                │
